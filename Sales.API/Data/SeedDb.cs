@@ -18,11 +18,11 @@ namespace Sales.API.Data
 
         private async Task ChackCountriesAsync()
         {
-        if(!_context.countries.Any())
+        if(!_context.Countries.Any())
             {
-                _context.countries.Add(new Country { Name = "Colombia" });
-                _context.countries.Add(new Country { Name = "Perú" });
-                _context.countries.Add(new Country { Name = "Chile" });
+                _context.Countries.Add(new Country { Name = "Colombia" });
+                _context.Countries.Add(new Country { Name = "Perú" });
+                _context.Countries.Add(new Country { Name = "Chile" });
 
                 await _context.SaveChangesAsync();
 

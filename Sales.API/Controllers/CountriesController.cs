@@ -17,13 +17,13 @@ namespace Sales.API.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAsync()
         {
-            return Ok(await _context.countries.ToListAsync());
+            return Ok(await _context.Countries.ToListAsync());
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult> GetAsync(int id)
         {
-            var country = await _context.countries.FirstOrDefaultAsync(x => x.Id == id);
+            var country = await _context.Countries.FirstOrDefaultAsync(x => x.Id == id);
             if (country == null)
             {
                 return NotFound();
@@ -34,7 +34,7 @@ namespace Sales.API.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteAsync(int id)
         {
-            var afectedRows = await _context.countries.Where(x => x.Id == id).ExecuteDeleteAsync();
+            var afectedRows = await _context.Countries.Where(x => x.Id == id).ExecuteDeleteAsync();
 
             if (afectedRows == 0)
             {

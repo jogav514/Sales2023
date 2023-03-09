@@ -18,7 +18,7 @@ namespace Sales.API.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAsync()
         {
-            return Ok(await _context.categories.ToListAsync());
+            return Ok(await _context.Categories.ToListAsync());
         }
 
         [HttpPost]
@@ -50,7 +50,7 @@ namespace Sales.API.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult> Get(int id)
         {
-            var category = await _context.categories.FirstOrDefaultAsync(x => x.Id == id);
+            var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -88,7 +88,7 @@ namespace Sales.API.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var afectedRows = await _context.categories.Where(x => x.Id == id).ExecuteDeleteAsync();
+            var afectedRows = await _context.Categories.Where(x => x.Id == id).ExecuteDeleteAsync();
             if (afectedRows == 0)
             {
                 return NotFound();
