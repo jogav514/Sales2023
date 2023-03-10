@@ -18,7 +18,7 @@ namespace Sales.API.Data
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
-            await ChackCountriesAsync();
+            //await ChackCountriesAsync();
         }
 
         private async Task ChackCountriesAsync()
