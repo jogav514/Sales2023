@@ -18,13 +18,14 @@ namespace Sales.API.Data
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
-            //await ChackCountriesAsync();
+            await ChackCountriesAsync();
+            await CheckCategoryAsync();
         }
 
         private async Task ChackCountriesAsync()
         {
-            //if (!_context.Countries.Any())
-            //{
+            if (!_context.Countries.Any())
+            {
                 Response responseCountries = await _apiService.GetListAsync<CountryResponse>("/v1", "/countries");
                 if (responseCountries.IsSuccess)
                 {
@@ -77,8 +78,37 @@ namespace Sales.API.Data
                         }
                     }
                 }
-           // }
+           }
 
+        }
+
+        private async Task CheckCategoryAsync()
+        {
+            if (!_context.Categories.Any())
+            {
+                _context.Categories.Add(new Category
+                {
+                    Name = "Calzado",
+                });
+                _context.Categories.Add(new Category
+                {
+                    Name = "Tecnología",
+                });
+                _context.Categories.Add(new Category
+                {
+                    Name = "Ropa",
+                });
+                _context.Categories.Add(new Category
+                {
+                    Name = "Deportes",
+                });
+                _context.Categories.Add(new Category
+                {
+                    Name = "Vehiculos",
+                });
+            }
+
+            await _context.SaveChangesAsync();
         }
 
     }
