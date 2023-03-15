@@ -17,10 +17,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=DockerConnection"));
 builder.Services.AddTransient<SeedDb>();
 builder.Services.AddScoped<IApiService, ApiService>();
-
-var app = builder.Build();
-SeedData(app);
-
 builder.Services.AddIdentity<User, IdentityRole>(x =>
 {
     x.User.RequireUniqueEmail = true;
@@ -34,6 +30,12 @@ builder.Services.AddIdentity<User, IdentityRole>(x =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IUserHelper, UserHelper>();
+
+
+var app = builder.Build();
+SeedData(app);
+
+
 
 
 void SeedData(WebApplication app)
@@ -54,10 +56,10 @@ void SeedData(WebApplication app)
     }
 
     app.UseHttpsRedirection();
-
+    app.UseAuthentication();
     app.UseAuthorization();
 
-    app.UseAuthentication();
+   
 
     app.MapControllers();
 

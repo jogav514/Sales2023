@@ -7,23 +7,23 @@ using Sales.Shared.Entities;
 
 namespace Sales.API.Controllers
 {
+
     [ApiController]
-    [Route("api/categories")]
-    public class CategoriesController : ControllerBase
+    [Route("api/subcategories")]
+    public class SubCategoriesController : ControllerBase
     {
+
         private readonly DataContext _context;
-        public CategoriesController(DataContext context)
+        public SubCategoriesController(DataContext context)
         {
             _context = context;
         }
-
         [HttpGet]
-        public async Task<ActionResult> GetAsync([FromQuery] PaginationDTO pagination)
+        public async Task<ActionResult> Get([FromQuery] PaginationDTO pagination)
         {
-            var queryable = _context.Categories
-           .Include(x => x.SubCategories)
-           .AsQueryable();
-
+            var queryable = _context.SubCategories
+                .Where(x => x.Category!.Id == pagination.Id)
+                .AsQueryable();
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
                 queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
@@ -31,67 +31,57 @@ namespace Sales.API.Controllers
 
 
             return Ok(await queryable
-        .OrderBy(x => x.Name)
-        .Paginate(pagination)
-        .ToListAsync());
-
-            //            return Ok(await _context.Categories.ToListAsync());
+                .OrderBy(x => x.Name)
+                .Paginate(pagination)
+                .ToListAsync());
         }
-
         [HttpGet("totalPages")]
         public async Task<ActionResult> GetPages([FromQuery] PaginationDTO pagination)
         {
-            var queryable = _context.Categories.AsQueryable();
+            var queryable = _context.SubCategories
+                .Where(x => x.Category!.Id == pagination.Id)
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
                 queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
             }
 
+
             double count = await queryable.CountAsync();
             double totalPages = Math.Ceiling(count / pagination.RecordsNumber);
             return Ok(totalPages);
         }
-        [HttpGet("full")]
-        public async Task<ActionResult> GetFullAsync()
-        {
-            return Ok(await _context.Categories
-                .Include(x => x.SubCategories)
-                .ToListAsync());
-        }
-
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult> Get(int id)
+        public async Task<IActionResult> GetAsync(int id)
         {
-            var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
-            if (category == null)
+            var subCategory = await _context.SubCategories.FirstOrDefaultAsync(x => x.Id == id);
+            if (subCategory == null)
             {
                 return NotFound();
             }
 
-            return Ok(category);
+            return Ok(subCategory);
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostAsync(Category category)
+        public async Task<ActionResult> PostAsync(SubCategory subCategory)
         {
-            _context.Add(category);
             try
             {
+                _context.Add(subCategory);
                 await _context.SaveChangesAsync();
-                return Ok(category);
+                return Ok(subCategory);
             }
             catch (DbUpdateException dbUpdateException)
             {
                 if (dbUpdateException.InnerException!.Message.Contains("duplicate"))
                 {
-                    return BadRequest("Ya existe una categoria con el mismo nombre");
+                    return BadRequest("Ya existe una ciudad con el mismo nombre.");
                 }
-                else
-                {
-                    return BadRequest(dbUpdateException.InnerException.Message);
-                }
+
+                return BadRequest(dbUpdateException.Message);
             }
             catch (Exception exception)
             {
@@ -99,26 +89,23 @@ namespace Sales.API.Controllers
             }
         }
 
-
         [HttpPut]
-        public async Task<ActionResult> Put(Category category)
+        public async Task<ActionResult> PutAsync(SubCategory subcategory)
         {
-            _context.Update(category);
             try
             {
+                _context.Update(subcategory);
                 await _context.SaveChangesAsync();
-                return Ok(category);
+                return Ok(subcategory);
             }
             catch (DbUpdateException dbUpdateException)
             {
                 if (dbUpdateException.InnerException!.Message.Contains("duplicate"))
                 {
-                    return BadRequest("Ya existe un registro con el mismo nombre");
+                    return BadRequest("Ya existe una ciudad con el mismo nombre.");
                 }
-                else
-                {
-                    return BadRequest(dbUpdateException.InnerException.Message);
-                }
+
+                return BadRequest(dbUpdateException.Message);
             }
             catch (Exception exception)
             {
@@ -127,13 +114,16 @@ namespace Sales.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            var afectedRows = await _context.Categories.Where(x => x.Id == id).ExecuteDeleteAsync();
-            if (afectedRows == 0)
+            var subcategory = await _context.SubCategories.FirstOrDefaultAsync(x => x.Id == id);
+            if (subcategory == null)
             {
                 return NotFound();
             }
+
+            _context.Remove(subcategory);
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 

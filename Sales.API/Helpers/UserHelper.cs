@@ -38,7 +38,6 @@ namespace Sales.API.Helpers
                     Name = roleName
                 });
             }
-
         }
 
         public async Task<User> GetUserAsync(string email)
@@ -48,7 +47,6 @@ namespace Sales.API.Helpers
                 .ThenInclude(c => c.State)
                 .ThenInclude(s => s.Country)
                 .FirstOrDefaultAsync(x => x.Email == email);
-
         }
 
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)

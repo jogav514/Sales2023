@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Pages\Categories\CategoryDetails.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.2" PrivateAssets="all" />
@@ -33,7 +37,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Categories\CategoryDetails.razor" />
     <_ContentIncludedByDefault Remove="Shared\GenericList.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Categories\CategoryDetails.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\Categories\CategoryDetails.razor" />
   </ItemGroup>
 
 </Project>

@@ -8,18 +8,19 @@ using System.Xml.Linq;
 
 namespace Sales.Shared.Entities
 {
-     public class Category
+    public class SubCategory
     {
         public int Id { get; set; }
 
-        [Display(Name = "Categoría")]
+
+        [Display(Name = "Categoria")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [MaxLength(100, ErrorMessage = "El campo {0} no piuede tener mas de {1} caractéres")]
 
         public string Name { get; set; } = null!;
 
-        public ICollection<SubCategory>? SubCategories { get; set; }
+        public Category? Category { get; set; }
+        public int CategoryId { get; set; }
 
-        public int SubCategoryNumber => SubCategories == null ? 0 : SubCategories.Count;
     }
 }
