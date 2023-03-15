@@ -1,0 +1,59 @@
+﻿@page "/subcategories/edit/{SubCategoryId:int}"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+
+<h3>Editar Subcategoría</h3>
+
+@if (subCategory is null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <SubCategoryFrom @ref="subCategoryFrom" SubCategory="subCategory" OnValidSubmit="EditAsync" RetunrAction="Return" />
+}
+
+@code {
+    private SubCategory? subCategory;
+    private SubCategoryFrom? subCategoryFrom;
+
+    [Parameter]
+    public int SubCategoryId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responseHttp = await repository.Get<SubCategory>($"/api/subcategories/{SubCategoryId}");
+        if (responseHttp.Error)
+        {
+            if (responseHttp.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/categories");
+                return;
+            }
+            var message = await responseHttp.GetErrorMessageAsync();
+
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+        subCategory = responseHttp.Response;
+    }
+
+    private async Task EditAsync()
+    {
+        var resposeHttp = await repository.Put("/api/subcategories", subCategory);
+        if (resposeHttp.Error)
+        {
+            var message = await resposeHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+        Return();
+    }
+    private void Return()
+    {
+        subCategoryFrom!.FormPostedSuccessfully = true;
+        navigationManager.NavigateTo($"/categories/details/{subCategory!.CategoryId}");
+
+    }
+}

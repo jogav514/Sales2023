@@ -1,5 +1,184 @@
-﻿<h3>CategoryDetails</h3>
+﻿@page "/categories/details/{CategoryId:int}"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
 
-@code {
+@if (category is null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <div class="mb-2" style="display: flex; flex-wrap:wrap; align-items: center;">
+        <div>
+            <a class="btn btn-primary" href="/subcategories/create/@CategoryId">Nueva Subcategoria</a>
+            <a class="btn btn-success" href="/categories/">Regresar</a>
+        </div>
+        <div class="mx-2">
+            <input style="width: 400px;" type="text" class="form-control" id="titulo" placeholder="Buscar ciudad..." @bind-value="Filter" />
+        </div>
+        <div>
+            <button type="button" class="btn btn-outline-primary" @onclick="ApplyFilterAsync">Filtrar</button>
+            <button type="button" class="btn btn-outline-danger" @onclick="CleanFilterAsync">Limpiar</button>
+        </div>
+    </div>
+    <h3>@category.Name</h3>
+    <Pagination CurrentPage="currentPage"
+            TotalPages="totalPages"
+            SelectedPage="SelectedPage" />
+
+    <GenericList MyList="subCategories!">
+        <Body>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Subcategoria</th>
+                        <th style="width:180px"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var subcategory in subCategories!)
+                    {
+                        <tr>
+                            <td>
+                                @subcategory.Name
+                            </td>
+
+                            <td>
+                                <a class="btn btn-warning" href="/subcategories/edit/@subcategory.Id">Editar</a>
+                                <button class="btn btn-danger" @onclick=@(() => DeleteAsync(subcategory.Id))>Borrar</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </Body>
+    </GenericList>
+    
+}
+
+    @code {
+    private Category? category;
+    private List<SubCategory>? subCategories;
+    private int currentPage = 1;
+    private int totalPages;
+
+    [Parameter]
+    public int CategoryId { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string Page { get; set; } = string.Empty;
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string Filter { get; set; } = string.Empty;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+    private async Task SelectedPage(int page)
+    {
+        currentPage = page;
+        await LoadAsync(page);
+    }
+
+
+    private async Task LoadAsync(int page = 1)
+    {
+        //var responseHttp = await repository.Get<State>($"/api/states/{StateId}");
+        //if (responseHttp.Error)
+        //{
+        //    if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+        //    {
+        //        navigationManager.NavigateTo("/countries");
+        //        return;
+        //    }
+
+        //    var message = await responseHttp.GetErrorMessageAsync();
+        //    await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+        //    return;
+        //}
+
+        //state = responseHttp.Response;
+
+        if (!string.IsNullOrWhiteSpace(Page))
+        {
+            page = Convert.ToInt32(Page);
+        }
+
+        string url1 = string.Empty;
+        string url2 = string.Empty;
+
+        if (string.IsNullOrEmpty(Filter))
+        {
+            url1 = $"api/subcategories?id={CategoryId}&page={page}";
+            url2 = $"api/subcategories/totalPages?Id={CategoryId}";
+        }
+        else
+        {
+            url1 = $"api/subcategories?id={CategoryId}&page={page}&filter={Filter}";
+            url2 = $"api/subcategories/totalPages?id={CategoryId}&filter={Filter}";
+        }
+
+
+
+
+        var responseHppt = await repository.Get<Category>($"api/categories/{CategoryId}");
+        var responseHppt2 = await repository.Get<List<SubCategory>>(url1);
+        var responseHppt3 = await repository.Get<int>(url2);
+        category = responseHppt.Response;
+        subCategories = responseHppt2.Response;
+        totalPages = responseHppt3.Response;
+
+
+    }
+
+    private async Task DeleteAsync(int id)
+    {
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Realmente deseas eliminar el registro?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true,
+                CancelButtonText = "No",
+                ConfirmButtonText = "Si"
+            });
+
+        var confirm = string.IsNullOrEmpty(result.Value);
+        if (confirm)
+        {
+            return;
+        }
+
+        var responseHttp = await repository.Delete($"/api/categories/{CategoryId}");
+        if (responseHttp.Error)
+        {
+            if (responseHttp.HttpResponseMessage.StatusCode != HttpStatusCode.NotFound)
+            {
+                var message = await responseHttp.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+        }
+
+        await LoadAsync();
+    }
+    private async Task CleanFilterAsync()
+    {
+        Filter = string.Empty;
+        await ApplyFilterAsync();
+    }
+
+    private async Task ApplyFilterAsync()
+    {
+        int page = 1;
+        await LoadAsync(page);
+        await SelectedPage(page);
+    }
+
 
 }
