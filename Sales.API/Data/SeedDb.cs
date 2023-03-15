@@ -127,7 +127,8 @@ namespace Sales.API.Data
                 _context.Categories.Add(new Category
                 {
                     Name = "Accesorios para Vehículos",
-                    SubCategories = new List<SubCategory>() {
+                    SubCategories = new List<SubCategory>() 
+                    {
                     new SubCategory(){Name ="Acc. para Carros y Camionetas"},
                     new SubCategory(){Name ="Acc. para Motos y Cuatrimotos"},
                     new SubCategory(){Name ="Accesorios para Náuticos"},
@@ -143,8 +144,7 @@ namespace Sales.API.Data
                     new SubCategory(){Name ="Performance"},
                     new SubCategory(){Name ="Repuestos Carros y Camionetas"},
                     new SubCategory(){Name ="Repuestos Motos y Camionetas"},
-
-                    }
+                    },
                 });
                 _context.Categories.Add(new Category
                 {

@@ -21,6 +21,7 @@ namespace Sales.API.Data
             modelBuilder.Entity<Category>().HasIndex(x => x.Name).IsUnique();
             modelBuilder.Entity<State>().HasIndex("Name", "CountryId").IsUnique();
             modelBuilder.Entity<City>().HasIndex("Name", "StateId").IsUnique();
+            modelBuilder.Entity<SubCategory>().HasIndex("Name", "CategoryId").IsUnique();
 
 
         }

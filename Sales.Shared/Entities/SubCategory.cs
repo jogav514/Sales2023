@@ -13,7 +13,7 @@ namespace Sales.Shared.Entities
         public int Id { get; set; }
 
 
-        [Display(Name = "Categoria")]
+        [Display(Name = "SubCategoria")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [MaxLength(100, ErrorMessage = "El campo {0} no piuede tener mas de {1} caractéres")]
 

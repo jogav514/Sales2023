@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Sales.Shared.Entities
 {
-     public class Category
+    public class Category
     {
         public int Id { get; set; }
 
@@ -21,5 +15,6 @@ namespace Sales.Shared.Entities
         public ICollection<SubCategory>? SubCategories { get; set; }
 
         public int SubCategoryNumber => SubCategories == null ? 0 : SubCategories.Count;
+        
     }
 }
