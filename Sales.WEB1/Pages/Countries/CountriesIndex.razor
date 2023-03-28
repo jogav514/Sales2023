@@ -1,8 +1,10 @@
 ﻿@page "/countries"
 @using System.Net;
+
 @inject IRepository repository;
 @inject NavigationManager navigationManager;
 @inject SweetAlertService sweetAlertService;
+@attribute [Authorize(Roles = "Admin")]
 
 <h3>Países</h3>
 

@@ -25,7 +25,7 @@ namespace Sales.API.Data
             await ChackCountriesAsync();
             await CheckCategoryAsync();
             await CheckRolesAsync();
-            await CheckUserAsync("1010", "JOhan", "Gaviria", "jego@yopmail.com", "123 456 7890", "Calle Luna Calle Sol", UserType.Admin);
+            await CheckUserAsync("1010", "Johan", "Gaviria", "jego@yopmail.com", "123 456 7890", "Calle Luna Calle Sol", UserType.Admin);
 
         }
         private async Task<User> CheckUserAsync(string document, string firstName, string lastName, string email, string phone, string address, UserType userType)
