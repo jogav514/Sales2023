@@ -6,59 +6,69 @@
 
 @if (category is null)
 {
-    <p>Cargando...</p>
+    <div class="spineer" />
 }
 else
 {
-    <div class="mb-2" style="display: flex; flex-wrap:wrap; align-items: center;">
-        <div>
-            <a class="btn btn-primary" href="/subcategories/create/@CategoryId">Nueva Subcategoria</a>
-            <a class="btn btn-success" href="/categories/">Regresar</a>
-        </div>
-        <div class="mx-2">
-            <input style="width: 400px;" type="text" class="form-control" id="titulo" placeholder="Buscar ciudad..." @bind-value="Filter" />
-        </div>
-        <div>
-            <button type="button" class="btn btn-outline-primary" @onclick="ApplyFilterAsync">Filtrar</button>
-            <button type="button" class="btn btn-outline-danger" @onclick="CleanFilterAsync">Limpiar</button>
-        </div>
-    </div>
-    <h3>@category.Name</h3>
-    <Pagination CurrentPage="currentPage"
-            TotalPages="totalPages"
-            SelectedPage="SelectedPage" />
+
 
     <GenericList MyList="subCategories!">
         <Body>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Subcategoria</th>
-                        <th style="width:180px"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var subcategory in subCategories!)
-                    {
-                        <tr>
-                            <td>
-                                @subcategory.Name
-                            </td>
 
-                            <td>
-                                <a class="btn btn-warning" href="/subcategories/edit/@subcategory.Id">Editar</a>
-                                <button class="btn btn-danger" @onclick=@(() => DeleteAsync(subcategory.Id))>Borrar</button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            <div class="card">
+                <div class="card-header">
+                    <span>
+                        <i class="oi oi-globe"></i> @category.Name
+                        <a class="btn btn-sm btn-primary float-end" href="/subcategories/create/@CategoryId"><i class="oi oi-plus"></i> Adicionar Sub-Categoría</a>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2" style="display: flex; flex-wrap:wrap; align-items: center;">
+                        <div>
+                            <input style="width: 400px;" type="text" class="form-control" id="titulo" placeholder="Buscar sub-categoría..." @bind-value="Filter" />
+                        </div>
+                        <div class="mx-1">
+                            <button type="button" class="btn btn-outline-primary" @onclick="ApplyFilterAsync"><i class="oi oi-layers" /> Filtrar</button>
+                            <button type="button" class="btn btn-outline-danger" @onclick="CleanFilterAsync"><i class="oi oi-ban" /> Limpiar</button>
+                            <a class="btn btn-success" href="/categories/">Regresar</a>
+                        </div>
+                    </div>
+
+                    <Pagination CurrentPage="currentPage"
+                            TotalPages="totalPages"
+                            SelectedPage="SelectedPage" />
+
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Subcategoria</th>
+                                <th style="width:180px"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var subcategory in subCategories!)
+                            {
+                                <tr>
+                                    <td>
+                                        @subcategory.Name
+                                    </td>
+
+                                    <td>
+                                        <a class="btn btn-warning" href="/subcategories/edit/@subcategory.Id">Editar</a>
+                                        <button class="btn btn-danger" @onclick=@(() => DeleteAsync(subcategory.Id))>Borrar</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </Body>
     </GenericList>
-    
+
 }
 
-    @code {
+@code {
     private Category? category;
     private List<SubCategory>? subCategories;
     private int currentPage = 1;

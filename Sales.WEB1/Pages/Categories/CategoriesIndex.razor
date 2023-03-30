@@ -5,58 +5,68 @@
 @inject SweetAlertService sweetAlertService;
 @attribute [Authorize(Roles = "Admin")]
 
-<h3>Categoría</h3>
-
-<div class="mb-2" style="display: flex; flex-wrap:wrap; align-items: center;">
-    <div>
-        <a class="btn btn-primary" href="/categories/create">Nueva Categoría</a>
-    </div>
-    <div class="mx-2">
-        <input style="width: 400px;" type="text" class="form-control" id="titulo" placeholder="Buscar Categoria..." @bind-value="Filter" />
-    </div>
-    <div>
-        <button type="button" class="btn btn-outline-primary" @onclick="ApplyFilterAsync">Filtrar</button>
-        <button type="button" class="btn btn-outline-danger" @onclick="CleanFilterAsync">Limpiar</button>
-    </div>
-</div>
-
-<Pagination CurrentPage="currentPage"
-            TotalPages="totalPages"
-            SelectedPage="SelectedPageAync" />
+@if (Categories is null)
+{
+    <div class="spinner" />
+}
+else{
 
 <GenericList MyList="Categories">
     <Body>
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Categoría</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var category in Categories!)
-                {
-                    <tr>
-                        <td>
-                            @category.Name
-                        </td>
-                        <th>@category.SubCategoryNumber</th>
-                        <td>
-                            <a class="btn btn-info" href="/categories/details/@category.Id">Detalles</a>
-                            <a class="btn btn-warning" href="/categories/edit/@category.Id">Editar</a>
-                            <button class="btn btn-danger" @onclick=@(()=> DeleteAsync(category.Id))>Borrar</button>
-                        </td>
-                        
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div class="card">
+            <div class="card-header">
+                <span>
+                    <i class="oi oi-globe"></i> Categoría
+                    <a class="btn btn-sm btn-primary float-end" href="/countries/create"><i class="oi oi-plus"></i> Nueva Categoría</a>
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="mb-2" style="display: flex; flex-wrap:wrap; align-items: center;">
+                    <div>
+                        <input style="width: 400px;" type="text" class="form-control" id="titulo" placeholder="Buscar Categoría..." @bind-value="Filter" />
+                    </div>
+                    <div class="mx-1">
+                        <button type="button" class="btn btn-outline-primary" @onclick="ApplyFilterAsync"><i class="oi oi-layers" /> Filtrar</button>
+                        <button type="button" class="btn btn-outline-danger" @onclick="CleanFilterAsync"><i class="oi oi-ban" /> Limpiar</button>
+                    </div>
+                </div>
 
+                <Pagination CurrentPage="currentPage"
+                            TotalPages="totalPages"
+                            SelectedPage="SelectedPageAync" />
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Categoría</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var category in Categories!)
+                        {
+                            <tr>
+                                <td>
+                                    @category.Name
+                                </td>
+                                <th>@category.SubCategoryNumber</th>
+                                <td>
+                                    <a href="/categories/details/@category.Id" class="btn btn-info btn-sm"><i class="oi oi-list" /> Detalles</a>
+                                    <a href="/categories/edit/@category.Id" class="btn btn-warning btn-sm"><i class="oi oi-pencil" /> Editar</a>
+                                    <button class="btn btn-danger btn-sm" @onclick=@(() => DeleteAsync(category.Id))><i class="oi oi-trash" /> Borrar</button>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </Body>
 </GenericList>
 
-
+}
 @code {
     public List<Category>? Categories { get; set; }
     private int currentPage = 1;
