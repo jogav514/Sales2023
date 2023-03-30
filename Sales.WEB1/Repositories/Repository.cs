@@ -14,6 +14,13 @@ namespace Sales.WEB.Repositories
             PropertyNameCaseInsensitive = true,
         };
 
+        public async Task<HttpResponseWrapper<object>> Get(string url)
+        {
+            var responseHTTP = await _httpClient.GetAsync(url);
+            return new HttpResponseWrapper<object>(null, !responseHTTP.IsSuccessStatusCode, responseHTTP);
+        }
+
+
         public Repository(HttpClient httpClient)
         {
             _httpClient = httpClient;
