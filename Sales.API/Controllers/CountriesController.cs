@@ -81,7 +81,7 @@ namespace Sales.API.Controllers
         [HttpGet("combo")]
         public async Task<ActionResult> GetCombo()
         {
-            return Ok(await _context.Countries.ToListAsync());
+            return Ok(await _context.Countries.OrderBy(x => x.Name).ToListAsync());
         }
 
 

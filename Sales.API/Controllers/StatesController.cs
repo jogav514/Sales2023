@@ -80,6 +80,7 @@ namespace Sales.API.Controllers
         {
             return Ok(await _context.State
                 .Where(x => x.CountryId == countryId)
+                .OrderBy(x => x.Name)
                 .ToListAsync());
         }
 

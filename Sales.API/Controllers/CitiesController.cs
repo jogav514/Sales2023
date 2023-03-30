@@ -78,6 +78,7 @@ namespace Sales.API.Controllers
         {
             return Ok(await _context.Cities
                 .Where(x => x.StateId == stateId)
+                .OrderBy(x => x.Name)
                 .ToListAsync());
         }
 
