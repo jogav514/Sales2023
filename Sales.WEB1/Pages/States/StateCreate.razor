@@ -8,20 +8,17 @@
 
 <StateForm @ref="stateForm" State="state" OnValidSubmit="CreateAsync" RetunrAction="Return" />
 
-
 @code {
     private State state = new();
     private StateForm? stateForm;
-
-    [Parameter]
-    public int CountryId { get; set; }
     [CascadingParameter]
     BlazoredModalInstance BlazoredModal { get; set; } = default!;
 
+    [Parameter]
+    public int CountryId { get; set; }
 
     private async Task CreateAsync()
     {
-
         state.CountryId = CountryId;
         var responseHttp = await repository.Post("/api/states", state);
         if (responseHttp.Error)
@@ -31,12 +28,9 @@
             return;
         }
 
-
         await BlazoredModal.CloseAsync(ModalResult.Ok());
         Return();
     }
-
-
 
     private void Return()
     {

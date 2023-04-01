@@ -19,7 +19,7 @@ else
                 <div class="card-header">
                     <span>
                         <i class="oi oi-globe"></i> @country.Name
-                        <a class="btn btn-sm btn-primary float-end" @onclick=@(() => ShowModal())><i class="oi oi-plus"></i>  Nuevo Estado/Departamento</a>
+                        <a class="btn btn-sm btn-primary float-end" @onclick=@(() => ShowModal(country.Id, false))><i class="oi oi-plus"></i>  Nuevo Estado/Departamento</a>
                        
                         </span>
                 </div>
@@ -90,28 +90,11 @@ else
     [Parameter]
     [SupplyParameterFromQuery]
     public string Filter { get; set; } = string.Empty;
+
     [CascadingParameter]
     IModalService Modal { get; set; } = default!;
 
-    private async Task ShowModal(int id = 0, bool isEdit = false)
-    {
-        IModalReference modalReference;
-
-        if (isEdit)
-        {
-            modalReference = Modal.Show<StateEdit>(string.Empty, new ModalParameters().Add("StateId", id));
-        }
-        else
-        {
-            modalReference = Modal.Show<StateCreate>();
-        }
-
-        var result = await modalReference.Result;
-        if (result.Confirmed)
-        {
-            await LoadAsync();
-        }
-    }
+ 
 
 
     protected override async Task OnInitializedAsync()
@@ -127,21 +110,7 @@ else
 
     private async Task LoadAsync(int page = 1)
     {
-        //var responseHttp = await repository.Get<Country>($"/api/countries/{Id}");
-        //if (responseHttp.Error)
-        //{
-        //    if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
-        //    {
-        //        navigationManager.NavigateTo("/countries");
-        //        return;
-        //    }
-
-        //    var message = await responseHttp.GetErrorMessageAsync();
-        //    await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
-        //    return;
-        //}
-
-        //country = responseHttp.Response;
+       
 
         if (!string.IsNullOrWhiteSpace(Page))
         {
@@ -216,4 +185,23 @@ else
         await SelectedPage(page);
     }
 
+    private async Task ShowModal(int id = 0, bool isEdit = false)
+    {
+        IModalReference modalReference;
+
+        if (isEdit)
+        {
+            modalReference = Modal.Show<StateEdit>(string.Empty, new ModalParameters().Add("StateId", id));
+        }
+        else
+        {
+            modalReference = Modal.Show<StateCreate>(string.Empty, new ModalParameters().Add("CountryId", id));
+        }
+
+        var result = await modalReference.Result;
+        if (result.Confirmed)
+        {
+            await LoadAsync();
+        }
+    }
 }

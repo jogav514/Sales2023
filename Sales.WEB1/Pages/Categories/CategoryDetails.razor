@@ -20,7 +20,7 @@ else
                 <div class="card-header">
                     <span>
                         <i class="oi oi-grid-four-up"></i> @category.Name
-                        <a class="btn btn-sm btn-primary float-end" @onclick=@(() => ShowModal())><i class="oi oi-plus"></i> Adicionar Sub-Categoría</a>
+                        <a class="btn btn-sm btn-primary float-end" @onclick=@(() => ShowModal(category.Id, true))><i class="oi oi-plus"></i> Adicionar Sub-Categoría</a>
                     </span>
                 </div>
                 <div class="card-body">
@@ -99,7 +99,7 @@ else
         }
         else
         {
-            modalReference = Modal.Show<SubCategoryCreate>();
+            modalReference = Modal.Show<SubCategoryCreate>(string.Empty, new ModalParameters().Add("CategoryId", id));
         }
 
         var result = await modalReference.Result;
@@ -123,21 +123,6 @@ else
 
     private async Task LoadAsync(int page = 1)
     {
-        //var responseHttp = await repository.Get<State>($"/api/states/{StateId}");
-        //if (responseHttp.Error)
-        //{
-        //    if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
-        //    {
-        //        navigationManager.NavigateTo("/countries");
-        //        return;
-        //    }
-
-        //    var message = await responseHttp.GetErrorMessageAsync();
-        //    await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
-        //    return;
-        //}
-
-        //state = responseHttp.Response;
 
         if (!string.IsNullOrWhiteSpace(Page))
         {
