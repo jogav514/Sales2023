@@ -19,7 +19,7 @@ else
                 <div class="card-header">
                     <span>
                         <i class="oi oi-globe"></i> Países 
-                        <a class="btn btn-sm btn-primary float-end" href="/countries/create"><i class="oi oi-plus"></i> Adicionar País</a>
+                        <a class="btn btn-sm btn-primary float-end"@onclick=@(() => ShowModal())><i class="oi oi-plus"></i> Adicionar País</a>
                     </span>
                 </div>
                 <div class="card-body">
@@ -43,8 +43,8 @@ else
                 <tr>
                     
                     <th>País</th>
-                    <th style="width:220px">Estados/Departamentos</th>
-                    <th style="width:260px"></th>
+                    <th style="width:200px">Estados/Departamentos</th>
+                    <th style="width:280px"></th>
                 </tr>
             </thead>
             <tbody>
@@ -58,9 +58,9 @@ else
 
                         <th>@country.StatesNumber</th>
                         <td>
-                                        <a href="/countries/details/@country.Id" class="btn btn-info btn-sm"><i class="oi oi-list" /> Detalles</a>
-                                        <a href="/countries/edit/@country.Id" class="btn btn-warning btn-sm"><i class="oi oi-pencil" /> Editar</a>
-                                        <button class="btn btn-danger btn-sm" @onclick=@(() => DeleteAsync(country.Id))><i class="oi oi-trash" /> Borrar</button>
+                         <a href="/countries/details/@country.Id" class="btn btn-info btn-sm"><i class="oi oi-list"/> Detalles</a>
+                                        <a @onclick=@(() => ShowModal(country.Id, true)) class="btn btn-warning btn-sm"><i class="oi oi-pencil" /> Editar</a>
+                         <button class="btn btn-danger btn-sm" @onclick=@(() => DeleteAsync(country.Id))><i class="oi oi-trash"/>Borrar</button>
 
                         </td>
                     </tr>
@@ -86,6 +86,9 @@ else
     [Parameter]
     [SupplyParameterFromQuery]
     public string Filter { get; set; } = string.Empty;
+    [CascadingParameter]
+    IModalService Modal { get; set; } = default!;
+
 
 
     protected async override Task OnInitializedAsync()
@@ -97,6 +100,26 @@ else
     {
         currentPage = page;
         await LoadAsync(page);
+    }
+
+    private async Task ShowModal(int id = 0, bool isEdit = false)
+    {
+        IModalReference modalReference;
+
+        if (isEdit)
+        {
+            modalReference = Modal.Show<CountryEdit>(string.Empty, new ModalParameters().Add("Id", id));
+        }   
+        else
+        {   
+            modalReference = Modal.Show<CountryCreate>();
+        }
+
+        var result = await modalReference.Result;
+        if (result.Confirmed)
+        {
+            await LoadAsync();
+        }
     }
 
 

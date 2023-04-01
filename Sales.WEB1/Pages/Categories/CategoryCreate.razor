@@ -7,14 +7,17 @@
 
 <h3>Crear Categoría</h3>
 
-<CategoryForm @ref="categoryForm" Category="category" OnValidSubmit="Create" RetunrAction="Return" />
+<CategoryForm @ref="categoryForm" Category="category" OnValidSubmit="CreateAsync" RetunrAction="Return" />
 
 
 @code {
     private Category category = new();
     private CategoryForm? categoryForm;
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
 
-    private async Task Create()
+
+    private async Task CreateAsync()
     {
         var responseHttp = await repository.Post("/api/categories", category);
         if (responseHttp.Error)
@@ -25,7 +28,7 @@
         }
 
 
-
+        await BlazoredModal.CloseAsync(ModalResult.Ok());
         Return();
     }
 

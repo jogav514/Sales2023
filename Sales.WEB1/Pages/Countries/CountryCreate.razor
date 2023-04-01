@@ -12,6 +12,9 @@
 @code {
     private Country country= new();
     private CountryForm? countryForm;
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
 
     private async Task CreateAsync()
     {
@@ -24,7 +27,7 @@
         }
 
 
-
+        await BlazoredModal.CloseAsync(ModalResult.Ok());
         Return();
     }
     

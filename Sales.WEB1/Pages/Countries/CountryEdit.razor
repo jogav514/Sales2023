@@ -19,8 +19,13 @@ else
     private Country? country;
     private CountryForm? countryForm;
 
+
     [Parameter]
     public int Id { get; set; }
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,6 +53,8 @@ else
             await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
             return;
         }
+
+        await BlazoredModal.CloseAsync(ModalResult.Ok());
         Return();
     }
     private void Return()

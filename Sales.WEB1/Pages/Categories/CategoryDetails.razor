@@ -1,4 +1,5 @@
 ﻿@page "/categories/details/{CategoryId:int}"
+@using Sales.WEB.Pages.SubCategories;
 @inject IRepository repository
 @inject NavigationManager navigationManager
 @inject SweetAlertService sweetAlertService
@@ -19,7 +20,7 @@ else
                 <div class="card-header">
                     <span>
                         <i class="oi oi-grid-four-up"></i> @category.Name
-                        <a class="btn btn-sm btn-primary float-end" href="/subcategories/create/@CategoryId"><i class="oi oi-plus"></i> Adicionar Sub-Categoría</a>
+                        <a class="btn btn-sm btn-primary float-end" @onclick=@(() => ShowModal())><i class="oi oi-plus"></i> Adicionar Sub-Categoría</a>
                     </span>
                 </div>
                 <div class="card-body">
@@ -54,7 +55,7 @@ else
                                     </td>
 
                                     <td>
-                                        <a class="btn btn-warning" href="/subcategories/edit/@subcategory.Id">Editar</a>
+                                        <a class="btn btn-warning" @onclick=@(() => ShowModal(subcategory.Id, true))>Editar</a>
                                         <button class="btn btn-danger" @onclick=@(() => DeleteAsync(subcategory.Id))>Borrar</button>
                                     </td>
                                 </tr>
@@ -84,6 +85,29 @@ else
     [Parameter]
     [SupplyParameterFromQuery]
     public string Filter { get; set; } = string.Empty;
+
+    [CascadingParameter]
+    IModalService Modal { get; set; } = default!;
+
+    private async Task ShowModal(int id = 0, bool isEdit = false)
+    {
+        IModalReference modalReference;
+
+        if (isEdit)
+        {
+            modalReference = Modal.Show<SubCategoryEdit>(string.Empty, new ModalParameters().Add("SubCategoryId", id));
+        }
+        else
+        {
+            modalReference = Modal.Show<SubCategoryCreate>();
+        }
+
+        var result = await modalReference.Result;
+        if (result.Confirmed)
+        {
+            await LoadAsync();
+        }
+    }
 
 
     protected override async Task OnInitializedAsync()

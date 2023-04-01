@@ -18,7 +18,7 @@ else{
             <div class="card-header">
                 <span>
                         <i class="oi oi-grid-three-up"></i> Categoría
-                    <a class="btn btn-sm btn-primary float-end" href="/countries/create"><i class="oi oi-plus"></i> Nueva Categoría</a>
+                        <a class="btn btn-sm btn-primary float-end" @onclick=@(() => ShowModal())><i class="oi oi-plus"></i> Nueva Categoría</a>
                 </span>
             </div>
             <div class="card-body">
@@ -53,7 +53,7 @@ else{
                                 <th>@category.SubCategoryNumber</th>
                                 <td>
                                     <a href="/categories/details/@category.Id" class="btn btn-info btn-sm"><i class="oi oi-list" /> Detalles</a>
-                                    <a href="/categories/edit/@category.Id" class="btn btn-warning btn-sm"><i class="oi oi-pencil" /> Editar</a>
+                                        <a @onclick=@(() => ShowModal(category.Id, true)) class="btn btn-warning btn-sm"><i class="oi oi-pencil" /> Editar</a>
                                     <button class="btn btn-danger btn-sm" @onclick=@(() => DeleteAsync(category.Id))><i class="oi oi-trash" /> Borrar</button>
                                 </td>
 
@@ -78,6 +78,31 @@ else{
     [Parameter]
     [SupplyParameterFromQuery]
     public string Filter { get; set; } = string.Empty;
+
+    [CascadingParameter]
+    IModalService Modal { get; set; } = default!;
+
+
+    private async Task ShowModal(int id = 0, bool isEdit = false)
+    {
+        IModalReference modalReference;
+
+        if (isEdit)
+        {
+            modalReference = Modal.Show<CategoryEdit>(string.Empty, new ModalParameters().Add("Id", id));
+        }
+        else
+        {
+            modalReference = Modal.Show<CategoryCreate>();
+        }
+
+        var result = await modalReference.Result;
+        if (result.Confirmed)
+        {
+            await LoadAsync();
+        }
+    }
+
 
     protected async override Task OnInitializedAsync()
     {

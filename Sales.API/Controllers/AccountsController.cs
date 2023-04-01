@@ -292,7 +292,7 @@ namespace Sales.API.Controllers
             var result = await _userHelper.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
             if (!result.Succeeded)
             {
-                return BadRequest(result.Errors.FirstOrDefault().Description);
+                return BadRequest(result.Errors.FirstOrDefault()!.Description);
             }
 
             return NoContent();
